@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19 Mayıs | Yerel CTF Platformu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98)), url('https://images.unsplash.com/photo-1594132174009-54d55099f691?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat; opacity: 0.6; }
+        .ataturk-watermark { position: fixed; bottom: 0; right: 0; width: 40%; max-width: 500px; height: 80%; z-index: -1; background: url('https://www.ataturk.gov.tr/wp-content/uploads/2021/01/ataturk_imza_siluet.png') bottom right no-repeat; background-size: contain; opacity: 0.15; filter: grayscale(1) invert(1); pointer-events: none; }
+        .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .glass-card:hover { border-color: #ef4444; transform: translateY(-4px); background: rgba(30, 41, 59, 0.8); }
+        .flag-red { color: #ef4444; }
+        .btn-primary { background-color: #ef4444; transition: all 0.2s; }
+        .btn-primary:hover { background-color: #dc2626; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="bg-overlay"></div>
+    <div class="ataturk-watermark"></div>
+
+    <!-- Giriş Ekranı -->
+    <div id="authOverlay" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-xl">
+        <div class="glass-card max-w-md w-full p-10 rounded-3xl text-center">
+            <i data-lucide="shield-check" class="w-16 h-16 text-red-500 mx-auto mb-6"></i>
+            <h2 class="text-3xl font-black mb-2">Yarışmaya Katıl</h2>
+            <p class="text-slate-400 mb-8">Takım adını gir ve siber mücadeleye dahil ol!</p>
+            <input type="text" id="teamNameInput" placeholder="Takım Adı" class="w-full bg-slate-900 border-2 border-white/10 rounded-2xl px-6 py-4 mb-4 focus:border-red-500 outline-none text-center text-xl font-bold">
+            <button onclick="joinCompetition()" id="joinBtn" class="w-full btn-primary py-4 rounded-2xl font-black uppercase">Başla</button>
+            <p id="authError" class="text-red-500 mt-4 hidden text-sm font-bold"></p>
+        </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="sticky top-0 z-50 glass-card border-b border-white/10 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <i data-lucide="flag" class="flag-red w-8 h-8"></i>
+            <span class="text-xl font-bold uppercase"><span id="displayTeamName">Yükleniyor...</span> <span class="text-red-500">CTF</span></span>
+        </div>
+        <div class="flex gap-6 items-center">
+            <span id="userScoreDisplay" class="font-semibold bg-red-500/10 text-red-500 px-4 py-1.5 rounded-full border border-red-500/20">Puan: 0</span>
+            <button onclick="showScoreboard()" class="hover:text-red-500 flex items-center gap-2"><i data-lucide="award" class="w-5 h-5"></i> Sıralama</button>
+        </div>
+    </nav>
+
+    <main class="relative z-10 max-w-6xl mx-auto px-6 py-12">
+        <div id="challengesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </main>
+
+    <!-- Modallar -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black/90 hidden z-[60] flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-lg p-10 rounded-3xl relative">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <div id="scoreboardOverlay" class="fixed inset-0 bg-black/90 hidden z-[60] flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-3xl p-10 rounded-3xl relative">
+            <button onclick="closeScoreboard()" class="absolute top-6 right-6 text-slate-400"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <h2 class="text-4xl font-bold mb-8 flex items-center gap-4"><i data-lucide="trophy" class="text-yellow-500 w-10 h-10"></i> Canlı Sıralama</h2>
+            <div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b border-white/10 text-slate-400 uppercase text-xs"><th>Sıra</th><th>Takım</th><th class="text-center">Puan</th></tr></thead><tbody id="scoreboardBody"></tbody></table></div>
+        </div>
+    </div>
+
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
+
+// 🔥 AUTH
+import { 
+  getAuth, 
+  signInAnonymously, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+
+// 🔥 FIRESTORE
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBAIvWq_mk6dqRqBnkqqJVaHL95i1y4WEw",
+    authDomain: "ctf19-35ee8.firebaseapp.com",
+    projectId: "ctf19-35ee8",
+    storageBucket: "ctf19-35ee8.firebasestorage.app",
+    messagingSenderId: "99330699856",
+    appId: "1:99330699856:web:e01e7dd95bd161d020d755",
+    measurementId: "G-TCKMZZGYVL"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+ const challenges = [
+            { id: 1, category: "Seviye 1", title: "Başlangıç Şehri", points: 100, difficulty: "Kolay", description: "19 Mayıs Atatürk’ü Anma, Gençlik ve Spor Bayramı hangi şehirde başlamıştır?", flag: "Samsun" },
+            { id: 2, category: "Seviye 1", title: "Eğitim Bayrağı", points: 50, difficulty: "Çok Kolay", description: "Sisteme ısınma turu! Giriş anahtarını yazın. İpucu: <b>19mayis</b>", flag: "19mayis" },
+            { id: 3, category: "Seviye 1", title: "Tarihi Yıl", points: 100, difficulty: "Kolay", description: "Atatürk, Bandırma Vapuru ile hangi yılda yola çıkmıştır?", flag: "1919" },
+            { id: 6, category: "Seviye 2", title: "Anagram Görevi", points: 200, difficulty: "Orta", description: "Karışık harfleri düzelterek anlamlı bir kelime bulmalısın:<br><b class='text-2xl tracking-widest text-red-400'>K İ L Ç N E G</b>", flag: "Gençlik" },
+            { id: 12, category: "QR Görevleri", title: "QR 1: Lokasyon", points: 250, difficulty: "QR", description: "Öğretmeninden <b>QR 1</b> kodunu iste ve okut. Çıkan şifreli kelimeyi buraya yaz.", flag: "Samsun" },
+            { id: 13, category: "QR Görevleri", title: "QR 2: Hedef", points: 250, difficulty: "QR", description: "Öğretmeninden <b>QR 2</b> kodunu iste ve okut. Çıkan gizli kelimeyi buraya yaz.", flag: "Genclik" },
+            { id: 14, category: "QR Görevleri", title: "QR 3: Zaman", points: 250, difficulty: "QR", description: "Öğretmeninden <b>QR 3</b> kodunu iste ve okut. Çıkan önemli yılı buraya yaz.", flag: "1919" },
+            { id: 11, category: "Seviye 3", title: "Final Kod", points: 500, difficulty: "Zor", description: "Dijital kurtuluşun final anahtarını girin. İpucu: <b>dijital_kurtulus</b>", flag: "dijital_kurtulus" }
+        ];
+
+        let teamData = { name: "", score: 0, solved: [] };
+        let allTeams = [];
+
+        window.joinCompetition = async () => {
+            const name = document.getElementById('teamNameInput').value.trim();
+            if (!name) return;
+            try {
+                const userCred = await signInAnonymously(auth);
+                const uid = userCred.user.uid;
+                const teamRef = doc(db, 'leaderboard', uid);
+                const snap = await getDoc(teamRef);
+                if (!snap.exists()) {
+                    await setDoc(teamRef, { name, score: 0, solved: [], lastUpdate: Date.now() });
+                }
+                document.getElementById('authOverlay').classList.add('hidden');
+            } catch (err) { alert("Hata: " + err.message); }
+        };
+
+        window.submitFlag = async (id) => {
+            const input = document.getElementById('flagInput').value.trim().toLowerCase();
+            const ch = challenges.find(c => c.id === id);
+            if (input === ch.flag.toLowerCase()) {
+                if (!teamData.solved.includes(id)) {
+                    teamData.solved.push(id);
+                    teamData.score += ch.points;
+                    await setDoc(doc(db, 'leaderboard', auth.currentUser.uid), { ...teamData, lastUpdate: Date.now() });
+                    window.closeModal();
+                }
+            } else { document.getElementById('feedback').innerText = "Hatalı!"; document.getElementById('feedback').classList.remove('hidden'); }
+        };
+
+        window.openChallenge = (id) => {
+            const ch = challenges.find(c => c.id === id);
+            document.getElementById('modalContent').innerHTML = `
+                <h2 class="text-3xl font-black mb-4">${ch.title}</h2>
+                <p class="text-lg mb-6">${ch.description}</p>
+                <input type="text" id="flagInput" class="w-full bg-slate-900 border-2 border-white/10 rounded-xl p-4 mb-4 outline-none focus:border-red-500">
+                <button onclick="submitFlag(${ch.id})" class="w-full btn-primary py-4 rounded-xl font-bold">GÖNDER</button>
+                <p id="feedback" class="text-red-500 mt-2 hidden"></p>
+            `;
+            document.getElementById('modalOverlay').classList.remove('hidden');
+        };
+
+        window.closeModal = () => document.getElementById('modalOverlay').classList.add('hidden');
+        window.closeScoreboard = () => document.getElementById('scoreboardOverlay').classList.add('hidden');
+
+        function render() {
+            const grid = document.getElementById('challengesGrid');
+            grid.innerHTML = challenges.map(ch => {
+                const isSolved = teamData.solved.includes(ch.id);
+                return `
+                    <div onclick="openChallenge(${ch.id})" class="glass-card p-8 rounded-3xl cursor-pointer ${isSolved?'opacity-30 grayscale pointer-events-none':''}">
+                        <div class="flex justify-between mb-4"><span class="text-red-500 text-xs font-bold">${ch.category}</span><span>${ch.points} PTS</span></div>
+                        <h3 class="text-2xl font-bold">${ch.title}</h3>
+                        ${isSolved?'<div class="mt-4 text-green-500 font-bold">ÇÖZÜLDÜ</div>':''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.showScoreboard = () => {
+            const body = document.getElementById('scoreboardBody');
+            const sorted = [...allTeams].sort((a,b) => b.score - a.score || a.lastUpdate - b.lastUpdate);
+            body.innerHTML = sorted.map((t, i) => `
+                <tr class="border-b border-white/5"><td class="py-4 font-mono">#${i+1}</td><td class="font-bold">${t.name}</td><td class="text-center">${t.score}</td></tr>
+            `).join('');
+            document.getElementById('scoreboardOverlay').classList.remove('hidden');
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                onSnapshot(doc(db, 'leaderboard', user.uid), (s) => { if(s.exists()){ teamData = s.data(); document.getElementById('displayTeamName').innerText = teamData.name; document.getElementById('userScoreDisplay').innerText = "Puan: " + teamData.score; render(); document.getElementById('authOverlay').classList.add('hidden'); } });
+                onSnapshot(collection(db, 'leaderboard'), (s) => { allTeams = []; s.forEach(d => allTeams.push({ ...d.data(), uid: d.id })); if(!document.getElementById('scoreboardOverlay').classList.contains('hidden')) window.showScoreboard(); });
+            }
+        });
+        lucide.createIcons();
+    </script>
+</body>
+</html>
