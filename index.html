@@ -113,14 +113,35 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
  const challenges = [
-            { id: 1, category: "Seviye 1", title: "Başlangıç Şehri", points: 100, difficulty: "Kolay", description: "19 Mayıs Atatürk’ü Anma, Gençlik ve Spor Bayramı hangi şehirde başlamıştır?", flag: "Samsun" },
-            { id: 2, category: "Seviye 1", title: "Eğitim Bayrağı", points: 50, difficulty: "Çok Kolay", description: "Sisteme ısınma turu! Giriş anahtarını yazın. İpucu: <b>19mayis</b>", flag: "19mayis" },
-            { id: 3, category: "Seviye 1", title: "Tarihi Yıl", points: 100, difficulty: "Kolay", description: "Atatürk, Bandırma Vapuru ile hangi yılda yola çıkmıştır?", flag: "1919" },
-            { id: 6, category: "Seviye 2", title: "Anagram Görevi", points: 200, difficulty: "Orta", description: "Karışık harfleri düzelterek anlamlı bir kelime bulmalısın:<br><b class='text-2xl tracking-widest text-red-400'>K İ L Ç N E G</b>", flag: "Gençlik" },
-            { id: 12, category: "QR Görevleri", title: "QR 1: Lokasyon", points: 250, difficulty: "QR", description: "Öğretmeninden <b>QR 1</b> kodunu iste ve okut. Çıkan şifreli kelimeyi buraya yaz.", flag: "Samsun" },
-            { id: 13, category: "QR Görevleri", title: "QR 2: Hedef", points: 250, difficulty: "QR", description: "Öğretmeninden <b>QR 2</b> kodunu iste ve okut. Çıkan gizli kelimeyi buraya yaz.", flag: "Genclik" },
-            { id: 14, category: "QR Görevleri", title: "QR 3: Zaman", points: 250, difficulty: "QR", description: "Öğretmeninden <b>QR 3</b> kodunu iste ve okut. Çıkan önemli yılı buraya yaz.", flag: "1919" },
-            { id: 11, category: "Seviye 3", title: "Final Kod", points: 500, difficulty: "Zor", description: "Dijital kurtuluşun final anahtarını girin. İpucu: <b>dijital_kurtulus</b>", flag: "dijital_kurtulus" }
+             // SEVİYE 1: BAŞLANGIÇ
+            { id: 1, category: "Seviye 1", title: "Kurtuluşun Şehri", points: 100, difficulty: "Kolay", description: "Milli Mücadele'nin meşalesinin yandığı ilk şehir?", flag: "Samsun" },
+            { id: 2, category: "Seviye 1", title: "Tarihi Varış", points: 100, difficulty: "Kolay", description: "Atatürk Samsun'a hangi yıl ayak basmıştır?", flag: "1919" },
+            { id: 3, category: "Seviye 1", title: "Efsane Gemi", points: 100, difficulty: "Kolay", description: "Mustafa Kemal ve silah arkadaşlarını Samsun'a taşıyan gemi?", flag: "Bandırma" },
+            { id: 4, category: "Seviye 1", title: "Resmi Görev", points: 150, difficulty: "Kolay", description: "Atatürk Samsun'a giderken hangi resmi unvana sahipti?", flag: "9. Ordu Müfettişi" },
+            { id: 5, category: "Seviye 1", title: "Bayramın Adı", points: 100, difficulty: "Kolay", description: "19 Mayıs'ta kutladığımız bayramın tam adı nedir?", flag: "Gençlik ve Spor Bayramı" },
+
+            // SEVİYE 2: MÜCADELE
+            { id: 6, category: "Seviye 2", title: "Milletin Kararı", points: 200, difficulty: "Orta", description: "'Milletin istiklalini, yine milletin azim ve kararı kurtaracaktır.' cümlesi hangi genelgede yer alır?", flag: "Amasya Genelgesi" },
+            { id: 7, category: "Seviye 2", title: "Vatan Bir Bütündür", points: 200, difficulty: "Orta", description: "Milli sınırlar içinde vatan bir bütündür, parçalanamaz kararı ilk nerede alındı?", flag: "Erzurum Kongresi" },
+            { id: 8, category: "Seviye 2", title: "Büyük Eser", points: 200, difficulty: "Orta", description: "Atatürk'ün 1919-1927 yıllarını anlattığı en büyük eseri?", flag: "Nutuk" },
+            { id: 9, category: "Seviye 2", title: "Kesin Red", points: 200, difficulty: "Orta", description: "Manda ve himayenin kesin olarak reddedildiği kongre?", flag: "Sivas Kongresi" },
+            { id: 10, category: "Seviye 2", title: "Yeni Başkent", points: 200, difficulty: "Orta", description: "Milli Mücadele'nin merkezi seçilen Bozkır şehri?", flag: "Ankara" },
+
+            // SEVİYE 3: ZAFER
+            { id: 11, category: "Seviye 3", title: "Milli Ant", points: 300, difficulty: "Zor", description: "Milli sınırların belirlendiği 'Milli Yemin' metni?", flag: "Misak-ı Milli" },
+            { id: 12, category: "Seviye 3", title: "Kayıtsız Şartsız", points: 300, difficulty: "Zor", description: "Egemenlik kimindir?", flag: "Millet" },
+            { id: 13, category: "Seviye 3", title: "Hitabe Hedefi", points: 300, difficulty: "Zor", description: "Gençliğe Hitabe kime seslenir?", flag: "Türk Gençliği" },
+            { id: 14, category: "Seviye 3", title: "Büyük Doğum", points: 300, difficulty: "Zor", description: "Türkiye Devleti'nin yönetim şekli?", flag: "Cumhuriyet" },
+            { id: 15, category: "Seviye 3", title: "Bağımsızlık Şarkısı", points: 300, difficulty: "Zor", description: "Milli marşımızın adı?", flag: "İstiklal Marşı" },
+
+            // TEKNİK & SİBER
+            { id: 16, category: "Teknik", title: "Base64 Mesajı", points: 400, difficulty: "Teknik", description: "Şu mesajı çöz: <b>MTkgTWF5aXMgMTkxOQ==</b>", flag: "19 Mayıs 1919" },
+            { id: 17, category: "Teknik", title: "Base64 Mesajı", points: 400, difficulty: "Teknik", description: "Şu mesajı çöz: <b>MTg4MS0xOTM4Cg==</b>", flag: "1881-1938" },
+           
+            // QR GÖREVLERİ
+            { id: 17, category: "QR", title: "QR: Operasyon 1", points: 250, difficulty: "QR", description: "Öğretmenindeki QR 1 kodunu okut ve şifreyi gir.", flag: "Vatan" },
+            { id: 18, category: "QR", title: "QR: Operasyon 2", points: 250, difficulty: "QR", description: "Öğretmenindeki QR 2 kodunu okut ve şifreyi gir.", flag: "Hürriyet" },
+            { id: 19, category: "QR", title: "QR: Operasyon 3", points: 250, difficulty: "QR", description: "Öğretmenindeki QR 3 kodunu okut ve şifreyi gir.", flag: "İstikbal" }
         ];
 
         let teamData = { name: "", score: 0, solved: [] };
