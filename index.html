@@ -1,225 +1,1156 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>19 MAYIS: DİJİTAL KURTULUŞ GÖREVİ</title>
+    <title>Graphia | Dijital Medya ve Kreatif İçerik Ajansı</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind Configuration for Custom Colors & Animations -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#070913',
+                            card: '#0F1322',
+                            accent: '#6366F1',
+                            neonPink: '#EC4899',
+                            neonPurple: '#A855F7',
+                            neonCyan: '#06B6D4'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98)), url('https://images.unsplash.com/photo-1594132174009-54d55099f691?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat; opacity: 0.6; }
-        .ataturk-watermark { position: fixed; bottom: 0; right: 0; width: 40%; max-width: 500px; height: 80%; z-index: -1; background: url('https://www.ataturk.gov.tr/wp-content/uploads/2021/01/ataturk_imza_siluet.png') bottom right no-repeat; background-size: contain; opacity: 0.15; filter: grayscale(1) invert(1); pointer-events: none; }
-        .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
-        .glass-card:hover { border-color: #ef4444; transform: translateY(-4px); background: rgba(30, 41, 59, 0.8); }
-        .flag-red { color: #ef4444; }
-        .btn-primary { background-color: #ef4444; transition: all 0.2s; }
-        .btn-primary:hover { background-color: #dc2626; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
+        /* Custom glow effects and scrollbar styling */
+        .glow-purple {
+            box-shadow: 0 0 50px -10px rgba(168, 85, 247, 0.4);
+        }
+        .glow-pink {
+            box-shadow: 0 0 50px -10px rgba(236, 72, 153, 0.4);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070913;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1F2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366F1;
+        }
+        .glassmorphism {
+            background: rgba(15, 19, 34, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="bg-brand-dark text-slate-100 font-sans overflow-x-hidden">
 
-    <div class="bg-overlay"></div>
-    <div class="ataturk-watermark"></div>
-
-    <!-- Giriş Ekranı -->
-    <div id="authOverlay" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-xl">
-        <div class="glass-card max-w-md w-full p-10 rounded-3xl text-center">
-            <i data-lucide="shield-check" class="w-16 h-16 text-red-500 mx-auto mb-6"></i>
-            <h2 class="text-3xl font-black mb-2">Yarışmaya Katıl</h2>
-            <p class="text-slate-400 mb-8">Takım adını gir ve siber mücadeleye dahil ol!</p>
-            <input type="text" id="teamNameInput" placeholder="Takım Adı" class="w-full bg-slate-900 border-2 border-white/10 rounded-2xl px-6 py-4 mb-4 focus:border-red-500 outline-none text-center text-xl font-bold">
-            <button onclick="joinCompetition()" id="joinBtn" class="w-full btn-primary py-4 rounded-2xl font-black uppercase">Başla</button>
-            <p id="authError" class="text-red-500 mt-4 hidden text-sm font-bold"></p>
-        </div>
-    </div>
-
-    <!-- Nav -->
-    <nav class="sticky top-0 z-50 glass-card border-b border-white/10 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <i data-lucide="flag" class="flag-red w-8 h-8"></i>
-            <span class="text-xl font-bold uppercase"><span id="displayTeamName">Yükleniyor...</span> <span class="text-red-500">19 MAYIS: DİJİTAL KURTULUŞ GÖREVİ</span></span>
-        </div>
-        <div class="flex gap-6 items-center">
-            <span id="userScoreDisplay" class="font-semibold bg-red-500/10 text-red-500 px-4 py-1.5 rounded-full border border-red-500/20">Puan: 0</span>
-            <button onclick="showScoreboard()" class="hover:text-red-500 flex items-center gap-2"><i data-lucide="award" class="w-5 h-5"></i> Sıralama</button>
-        </div>
-    </nav>
-
-    <main class="relative z-10 max-w-6xl mx-auto px-6 py-12">
-        <div id="challengesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-    </main>
-
-    <!-- Modallar -->
-    <div id="modalOverlay" class="fixed inset-0 bg-black/90 hidden z-[60] flex items-center justify-center p-4">
-        <div class="glass-card w-full max-w-lg p-10 rounded-3xl relative">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400"><i data-lucide="x" class="w-8 h-8"></i></button>
-            <div id="modalContent"></div>
-        </div>
-    </div>
-
-    <div id="scoreboardOverlay" class="fixed inset-0 bg-black/90 hidden z-[60] flex items-center justify-center p-4">
-        <div class="glass-card w-full max-w-3xl p-10 rounded-3xl relative">
-            <button onclick="closeScoreboard()" class="absolute top-6 right-6 text-slate-400"><i data-lucide="x" class="w-8 h-8"></i></button>
-            <h2 class="text-4xl font-bold mb-8 flex items-center gap-4"><i data-lucide="trophy" class="text-yellow-500 w-10 h-10"></i> Canlı Sıralama</h2>
-            <div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b border-white/10 text-slate-400 uppercase text-xs"><th>Sıra</th><th>Takım</th><th class="text-center">Puan</th></tr></thead><tbody id="scoreboardBody"></tbody></table></div>
-        </div>
-    </div>
-
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
-
-// 🔥 AUTH
-import { 
-  getAuth, 
-  signInAnonymously, 
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
-
-// 🔥 FIRESTORE
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBAIvWq_mk6dqRqBnkqqJVaHL95i1y4WEw",
-    authDomain: "ctf19-35ee8.firebaseapp.com",
-    projectId: "ctf19-35ee8",
-    storageBucket: "ctf19-35ee8.firebasestorage.app",
-    messagingSenderId: "99330699856",
-    appId: "1:99330699856:web:e01e7dd95bd161d020d755",
-    measurementId: "G-TCKMZZGYVL"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-const auth = getAuth(app);
-const db = getFirestore(app);
-
- const challenges = [
-             // SEVİYE 1: BAŞLANGIÇ
-            { id: 1, category: "Seviye 1", title: "Kurtuluşun Şehri", points: 100, difficulty: "Kolay", description: "Milli Mücadele'nin meşalesinin yandığı ilk şehir?", flag: "Samsun" },
-            { id: 2, category: "Seviye 1", title: "Tarihi Varış", points: 100, difficulty: "Kolay", description: "Atatürk Samsun'a hangi yıl ayak basmıştır?", flag: "1919" },
-            { id: 3, category: "Seviye 1", title: "Efsane Gemi", points: 100, difficulty: "Kolay", description: "Mustafa Kemal ve silah arkadaşlarını Samsun'a taşıyan gemi?", flag: "Bandırma" },
-            { id: 4, category: "Seviye 1", title: "Resmi Görev", points: 150, difficulty: "Kolay", description: "Atatürk Samsun'a giderken hangi resmi unvana sahipti?", flag: "9. Ordu Müfettişi" },
-            { id: 5, category: "Seviye 1", title: "Bayramın Adı", points: 100, difficulty: "Kolay", description: "19 Mayıs'ta kutladığımız bayramın tam adı nedir?", flag: "Gençlik ve Spor Bayramı" },
-
-            // SEVİYE 2: MÜCADELE
-            { id: 6, category: "Seviye 2", title: "Milletin Kararı", points: 200, difficulty: "Orta", description: "'Milletin istiklalini, yine milletin azim ve kararı kurtaracaktır.' cümlesi hangi genelgede yer alır?", flag: "Amasya Genelgesi" },
-            { id: 7, category: "Seviye 2", title: "Vatan Bir Bütündür", points: 200, difficulty: "Orta", description: "Milli sınırlar içinde vatan bir bütündür, parçalanamaz kararı ilk nerede alındı?", flag: "Erzurum Kongresi" },
-            { id: 8, category: "Seviye 2", title: "Büyük Eser", points: 200, difficulty: "Orta", description: "Atatürk'ün 1919-1927 yıllarını anlattığı en büyük eseri?", flag: "Nutuk" },
-            { id: 9, category: "Seviye 2", title: "Kesin Red", points: 200, difficulty: "Orta", description: "Manda ve himayenin kesin olarak reddedildiği kongre?", flag: "Sivas Kongresi" },
-            { id: 10, category: "Seviye 2", title: "Yeni Başkent", points: 200, difficulty: "Orta", description: "Milli Mücadele'nin merkezi seçilen Bozkır şehri?", flag: "Ankara" },
-
-            // SEVİYE 3: ZAFER
-            { id: 11, category: "Seviye 3", title: "Milli Ant", points: 300, difficulty: "Zor", description: "Milli sınırların belirlendiği 'Milli Yemin' metni?", flag: "Misak-ı Milli" },
-            { id: 12, category: "Seviye 3", title: "Kayıtsız Şartsız", points: 300, difficulty: "Zor", description: "Egemenlik kimindir?", flag: "Millet" },
-            { id: 13, category: "Seviye 3", title: "Hitabe Hedefi", points: 300, difficulty: "Zor", description: "Gençliğe Hitabe kime seslenir?", flag: "Türk Gençliği" },
-            { id: 14, category: "Seviye 3", title: "Büyük Doğum", points: 300, difficulty: "Zor", description: "Türkiye Devleti'nin yönetim şekli?", flag: "Cumhuriyet" },
-            { id: 15, category: "Seviye 3", title: "Bağımsızlık Şarkısı", points: 300, difficulty: "Zor", description: "Milli marşımızın adı?", flag: "İstiklal Marşı" },
-
-            // TEKNİK & SİBER
-            { id: 16, category: "Teknik", title: "Base64 Mesajı", points: 400, difficulty: "Teknik", description: "Şu mesajı çöz: <b>MTkgTWF5aXMgMTkxOQ==</b>", flag: "19 Mayıs 1919" },
-            { id: 17, category: "Teknik", title: "Base64 Mesajı", points: 400, difficulty: "Teknik", description: "Şu mesajı çöz: <b>MTg4MS0xOTM4Cg==</b>", flag: "1881-1938" },
-           
-            // QR GÖREVLERİ
-            { id: 17, category: "QR", title: "QR: Operasyon 1", points: 250, difficulty: "QR", description: "Öğretmenindeki QR 1 kodunu okut ve şifreyi gir.", flag: "Vatan" },
-            { id: 18, category: "QR", title: "QR: Operasyon 2", points: 250, difficulty: "QR", description: "Öğretmenindeki QR 2 kodunu okut ve şifreyi gir.", flag: "Hürriyet" },
-            { id: 19, category: "QR", title: "QR: Operasyon 3", points: 250, difficulty: "QR", description: "Öğretmenindeki QR 3 kodunu okut ve şifreyi gir.", flag: "İstikbal" }
-        ];
-
-        let teamData = { name: "", score: 0, solved: [] };
-        let allTeams = [];
-
-        window.joinCompetition = async () => {
-            const name = document.getElementById('teamNameInput').value.trim();
-            if (!name) return;
-            try {
-                const userCred = await signInAnonymously(auth);
-                const uid = userCred.user.uid;
-                const teamRef = doc(db, 'leaderboard', uid);
-                const snap = await getDoc(teamRef);
-                if (!snap.exists()) {
-                    await setDoc(teamRef, { name, score: 0, solved: [], lastUpdate: Date.now() });
-                }
-                document.getElementById('authOverlay').classList.add('hidden');
-            } catch (err) { alert("Hata: " + err.message); }
-        };
-
-        window.submitFlag = async (id) => {
-            const input = document.getElementById('flagInput').value.trim().toLowerCase();
-            const ch = challenges.find(c => c.id === id);
-            if (input === ch.flag.toLowerCase()) {
-                if (!teamData.solved.includes(id)) {
-                    teamData.solved.push(id);
-                    teamData.score += ch.points;
-                    await setDoc(doc(db, 'leaderboard', auth.currentUser.uid), { ...teamData, lastUpdate: Date.now() });
-                    window.closeModal();
-                }
-            } else { document.getElementById('feedback').innerText = "Hatalı!"; document.getElementById('feedback').classList.remove('hidden'); }
-        };
-
-        window.openChallenge = (id) => {
-            const ch = challenges.find(c => c.id === id);
-            document.getElementById('modalContent').innerHTML = `
-                <h2 class="text-3xl font-black mb-4">${ch.title}</h2>
-                <p class="text-lg mb-6">${ch.description}</p>
-                <input type="text" id="flagInput" class="w-full bg-slate-900 border-2 border-white/10 rounded-xl p-4 mb-4 outline-none focus:border-red-500">
-                <button onclick="submitFlag(${ch.id})" class="w-full btn-primary py-4 rounded-xl font-bold">GÖNDER</button>
-                <p id="feedback" class="text-red-500 mt-2 hidden"></p>
-            `;
-            document.getElementById('modalOverlay').classList.remove('hidden');
-        };
-
-        window.closeModal = () => document.getElementById('modalOverlay').classList.add('hidden');
-        window.closeScoreboard = () => document.getElementById('scoreboardOverlay').classList.add('hidden');
-
-        function render() {
-            const grid = document.getElementById('challengesGrid');
-            grid.innerHTML = challenges.map(ch => {
-                const isSolved = teamData.solved.includes(ch.id);
-                return `
-                    <div onclick="openChallenge(${ch.id})" class="glass-card p-8 rounded-3xl cursor-pointer ${isSolved?'opacity-30 grayscale pointer-events-none':''}">
-                        <div class="flex justify-between mb-4"><span class="text-red-500 text-xs font-bold">${ch.category}</span><span>${ch.points} PTS</span></div>
-                        <h3 class="text-2xl font-bold">${ch.title}</h3>
-                        ${isSolved?'<div class="mt-4 text-green-500 font-bold">ÇÖZÜLDÜ</div>':''}
+    <!-- NAVIGATION BAR -->
+    <header class="fixed top-0 left-0 w-full z-50 glassmorphism transition-all duration-300" id="mainHeader">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-2 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-neonPurple via-brand-accent to-brand-neonPink p-[2px] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-brand-dark rounded-[10px] flex items-center justify-center">
+                        <span class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-neonPurple to-brand-neonPink">G</span>
                     </div>
-                `;
-            }).join('');
-        }
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">GRAPHIA<span class="text-brand-neonPink">.</span></span>
+            </a>
 
-        window.showScoreboard = () => {
-            const body = document.getElementById('scoreboardBody');
-            const sorted = [...allTeams].sort((a,b) => b.score - a.score || a.lastUpdate - b.lastUpdate);
-            body.innerHTML = sorted.map((t, i) => `
-                <tr class="border-b border-white/5"><td class="py-4 font-mono">#${i+1}</td><td class="font-bold">${t.name}</td><td class="text-center">${t.score}</td></tr>
-            `).join('');
-            document.getElementById('scoreboardOverlay').classList.remove('hidden');
-        };
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#hizmetler" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Hizmetlerimiz</a>
+                <a href="#markalar" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Markalarımız</a>
+                <a href="#arac" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Büyüme Analizi</a>
+                <a href="#yorumlar" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Yorumlar</a>
+                <a href="#sss" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">S.S.S</a>
+            </nav>
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                onSnapshot(doc(db, 'leaderboard', user.uid), (s) => { if(s.exists()){ teamData = s.data(); document.getElementById('displayTeamName').innerText = teamData.name; document.getElementById('userScoreDisplay').innerText = "Puan: " + teamData.score; render(); document.getElementById('authOverlay').classList.add('hidden'); } });
-                onSnapshot(collection(db, 'leaderboard'), (s) => { allTeams = []; s.forEach(d => allTeams.push({ ...d.data(), uid: d.id })); if(!document.getElementById('scoreboardOverlay').classList.contains('hidden')) window.showScoreboard(); });
+            <!-- CTA Button (Desktop) -->
+            <div class="hidden md:block">
+                <a href="#iletisim" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-brand-accent to-brand-neonPurple hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-indigo-500/20">
+                    Teklif Alın <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button class="md:hidden text-slate-200 hover:text-white focus:outline-none" id="mobileMenuBtn" aria-label="Menüyü Aç">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-brand-dark/95 border-b border-slate-800 transition-all duration-300" id="mobileMenu">
+            <div class="px-6 py-6 flex flex-col space-y-4">
+                <a href="#hizmetler" class="text-base font-medium text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800/50">Hizmetlerimiz</a>
+                <a href="#markalar" class="text-base font-medium text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800/50">Markalarımız</a>
+                <a href="#arac" class="text-base font-medium text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800/50">Büyüme Analizi</a>
+                <a href="#yorumlar" class="text-base font-medium text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800/50">Yorumlar</a>
+                <a href="#sss" class="text-base font-medium text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800/50">S.S.S</a>
+                <a href="#iletisim" class="w-full text-center px-5 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-brand-accent to-brand-neonPurple hover:opacity-90 transition-all">
+                    Teklif Alın <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-screen pt-32 pb-20 flex items-center justify-center overflow-hidden">
+        <!-- Background Orbs -->
+        <div class="absolute top-1/4 left-1/10 w-96 h-96 rounded-full bg-brand-neonPurple/20 blur-[120px] animate-pulse-slow"></div>
+        <div class="absolute bottom-1/4 right-1/10 w-96 h-96 rounded-full bg-brand-neonPink/15 blur-[120px] animate-pulse-slow" style="animation-delay: 2s;"></div>
+        
+        <!-- Grid Background Pattern -->
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left Content -->
+                <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 bg-slate-800/50 border border-slate-700/60 rounded-full px-4 py-1.5 backdrop-blur">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span>
+                        <span class="text-xs font-semibold tracking-wide text-slate-200 uppercase">Sosyal Medyada Yeni Çağ</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1] text-white">
+                        Markanızı <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-neonPurple via-brand-neonPink to-brand-accent">Sıra Dışı</span> İçeriklerle Büyütüyoruz.
+                    </h1>
+                    
+                    <p class="text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0">
+                        Sosyal medya algoritmasını iyi biliyoruz. Markanız için hedef odaklı, estetik ve viral potansiyele sahip içerikler üreterek topluluğunuzu gerçek müşterilere dönüştürüyoruz.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#iletisim" class="w-full sm:w-auto text-center px-8 py-4 rounded-xl text-base font-bold text-white bg-gradient-to-r from-brand-accent via-brand-neonPurple to-brand-neonPink hover:scale-105 transition-all duration-300 shadow-lg glow-purple">
+                            Bizimle Çalışın
+                        </a>
+                        <a href="#markalar" class="w-full sm:w-auto text-center px-8 py-4 rounded-xl text-base font-bold text-slate-300 bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-800/50 transition-all duration-300">
+                            İşlerimizi İnceleyin
+                        </a>
+                    </div>
+
+                    <!-- Client Logos Micro Section -->
+                    <div class="pt-8 border-t border-slate-800/60">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4">Güvenen Global ve Yerel Markalar</p>
+                        <div class="flex flex-wrap justify-center lg:justify-start items-center gap-6 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
+                            <span class="text-lg font-bold text-white tracking-widest"><i class="fa-solid fa-bolt mr-1"></i> VOLTA</span>
+                            <span class="text-lg font-bold text-white tracking-widest"><i class="fa-solid fa-droplet mr-1"></i> GLOW</span>
+                            <span class="text-lg font-bold text-white tracking-widest"><i class="fa-solid fa-leaf mr-1"></i> ORGANIC</span>
+                            <span class="text-lg font-bold text-white tracking-widest"><i class="fa-solid fa-gem mr-1"></i> AMURA</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Right Content (Floating App Preview Card) -->
+                <div class="lg:col-span-5 relative flex justify-center lg:justify-end">
+                    <div class="relative w-full max-w-[420px] aspect-[4/5] rounded-3xl p-6 glassmorphism border border-slate-800 shadow-2xl animate-float">
+                        <!-- Neon gradient border decoration -->
+                        <div class="absolute -inset-0.5 bg-gradient-to-tr from-brand-neonPurple to-brand-neonPink rounded-3xl -z-10 opacity-30 blur-sm"></div>
+                        
+                        <!-- Mini Content Post simulation inside Agency Theme -->
+                        <div class="flex items-center justify-between border-b border-slate-800/80 pb-4 mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-neonPink to-brand-neonPurple flex items-center justify-center font-extrabold text-xs">G</div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white">graphia.media</h4>
+                                    <p class="text-[10px] text-slate-500">Sosyal Medya Ajansı</p>
+                                </div>
+                            </div>
+                            <button class="text-slate-400 hover:text-white"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+
+                        <!-- Card Central Dynamic Image Area -->
+                        <div class="relative w-full h-48 bg-gradient-to-br from-slate-800 via-brand-card to-slate-900 rounded-2xl overflow-hidden mb-4 flex flex-col justify-end p-4">
+                            <!-- Geometric Abstract Graphic -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-24 h-24 rounded-full border border-dashed border-brand-neonPink/40 animate-spin" style="animation-duration: 15s;"></div>
+                                <div class="absolute w-16 h-16 rounded-full border border-double border-brand-accent/40 animate-spin" style="animation-duration: 8s;"></div>
+                                <div class="absolute text-3xl text-brand-neonPink"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            </div>
+                            <div class="relative z-10">
+                                <span class="bg-brand-neonPink/20 text-brand-neonPink border border-brand-neonPink/30 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md">VİRAL STRATEJİ</span>
+                                <h3 class="text-sm font-bold text-white mt-1">Sıra dışı fikirlerle hedef kitleni harekete geçir.</h3>
+                            </div>
+                        </div>
+
+                        <!-- Simulated Stats metrics inside hero mockup -->
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-800/40">
+                                <span class="block text-slate-500 text-[9px] font-semibold uppercase">Erişim</span>
+                                <span class="text-xs font-bold text-green-400 mt-0.5 block"><i class="fa-solid fa-chart-line mr-0.5"></i> %324</span>
+                                <span class="text-[10px] text-slate-300 font-medium">1.2 Milyon</span>
+                            </div>
+                            <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-800/40">
+                                <span class="block text-slate-500 text-[9px] font-semibold uppercase">Etkileşim</span>
+                                <span class="text-xs font-bold text-brand-neonPurple mt-0.5 block"><i class="fa-solid fa-heart mr-0.5"></i> %180</span>
+                                <span class="text-[10px] text-slate-300 font-medium">84.2K</span>
+                            </div>
+                            <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-800/40">
+                                <span class="block text-slate-500 text-[9px] font-semibold uppercase">Dönüşüm</span>
+                                <span class="text-xs font-bold text-brand-neonCyan mt-0.5 block"><i class="fa-solid fa-cart-shopping mr-0.5"></i> %45</span>
+                                <span class="text-[10px] text-slate-300 font-medium">12.5K</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs text-slate-400">
+                            <span><i class="fa-solid fa-circle text-[7px] text-green-500 mr-1.5 animate-pulse"></i>Canlı Kampanya İzleme</span>
+                            <span class="font-semibold text-white">Yapay Zeka Destekli</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS COUNTER BAR -->
+    <section class="border-y border-slate-800/80 bg-brand-card/30 backdrop-blur-sm relative z-20">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 text-center">
+                <div>
+                    <span class="block text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-brand-neonPurple">50+</span>
+                    <span class="block text-xs md:text-sm text-slate-400 mt-2 font-medium uppercase tracking-wider">Aktif Marka Partneri</span>
+                </div>
+                <div>
+                    <span class="block text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-neonPurple to-brand-neonPink">12M+</span>
+                    <span class="block text-xs md:text-sm text-slate-400 mt-2 font-medium uppercase tracking-wider">Aylık Toplam Erişim</span>
+                </div>
+                <div>
+                    <span class="block text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-neonPink to-brand-neonCyan">3B+</span>
+                    <span class="block text-xs md:text-sm text-slate-400 mt-2 font-medium uppercase tracking-wider">Üretilen Özgün İçerik</span>
+                </div>
+                <div>
+                    <span class="block text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-neonCyan to-brand-accent">24/7</span>
+                    <span class="block text-xs md:text-sm text-slate-400 mt-2 font-medium uppercase tracking-wider">Topluluk & Algoritma Takibi</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section id="hizmetler" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <span class="text-sm font-bold text-brand-neonPink uppercase tracking-widest block">NE YAPIYORUZ?</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white">Sosyal Medyayı Markanız İçin Bir Güç Merkezine Dönüştürün</h2>
+                <p class="text-slate-400">Yalnızca "paylaşım yapmak" yetmez. Stratejik olarak planlanmış, yaratıcı bir marka sesi ve estetik bir tasarım diliyle fark yaratıyoruz.</p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Service Card 1 -->
+                <div class="group relative bg-brand-card p-8 rounded-2xl border border-slate-800 hover:border-brand-neonPurple/50 hover:bg-slate-900/50 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-brand-neonPurple/10 text-brand-neonPurple flex items-center justify-center mb-6 text-xl group-hover:scale-110 group-hover:bg-brand-neonPurple group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-hashtag"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Sosyal Medya Yönetimi</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Instagram, TikTok, LinkedIn ve YouTube kanallarınız için içerik planlama, yayınlama takvimi, topluluk yönetimi ve aylık performans raporlaması sunuyoruz.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-2 mb-6">
+                        <li><i class="fa-solid fa-check text-brand-neonPurple mr-2"></i> İçerik Takvimi Hazırlama</li>
+                        <li><i class="fa-solid fa-check text-brand-neonPurple mr-2"></i> Trend ve Rakip Analizleri</li>
+                        <li><i class="fa-solid fa-check text-brand-neonPurple mr-2"></i> Etkileşim & Yorum Takibi</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div class="group relative bg-brand-card p-8 rounded-2xl border border-slate-800 hover:border-brand-neonPink/50 hover:bg-slate-900/50 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-brand-neonPink/10 text-brand-neonPink flex items-center justify-center mb-6 text-xl group-hover:scale-110 group-hover:bg-brand-neonPink group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Kreatif Video & Reels</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Reels, Shorts ve TikTok formatlarına özel, ilk 3 saniyede kullanıcıyı yakalayan, trend müziklerle harmanlanmış profesyonel video çekim ve kurguları hazırlıyoruz.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-2 mb-6">
+                        <li><i class="fa-solid fa-check text-brand-neonPink mr-2"></i> Kanca (Hook) Odaklı Senaryolar</li>
+                        <li><i class="fa-solid fa-check text-brand-neonPink mr-2"></i> Profesyonel Kurgu & Altyazılar</li>
+                        <li><i class="fa-solid fa-check text-brand-neonPink mr-2"></i> Mobil ve Studio Çekimleri</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div class="group relative bg-brand-card p-8 rounded-2xl border border-slate-800 hover:border-brand-neonCyan/50 hover:bg-slate-900/50 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-brand-neonCyan/10 text-brand-neonCyan flex items-center justify-center mb-6 text-xl group-hover:scale-110 group-hover:bg-brand-neonCyan group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Marka Tasarımı & Kimliği</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Markanızın duruşuna ve felsefesine uygun, estetik olarak benzersiz, renk paletinden tipografiye uzanan tutarlı sosyal medya görsel tasarımları oluşturuyoruz.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-2 mb-6">
+                        <li><i class="fa-solid fa-check text-brand-neonCyan mr-2"></i> Özel Instagram Grid Şablonları</li>
+                        <li><i class="fa-solid fa-check text-brand-neonCyan mr-2"></i> Hikaye & Öne Çıkanlar Tasarımı</li>
+                        <li><i class="fa-solid fa-check text-brand-neonCyan mr-2"></i> İllüstrasyon ve İnfografik Tasarımı</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 4 -->
+                <div class="group relative bg-brand-card p-8 rounded-2xl border border-slate-800 hover:border-brand-accent/50 hover:bg-slate-900/50 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-brand-accent/10 text-brand-accent flex items-center justify-center mb-6 text-xl group-hover:scale-110 group-hover:bg-brand-accent group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Meta & TikTok Reklamları</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Doğru kitleye, doğru zamanda, minimum bütçeyle maksimum erişim sağlayacak hedeflemeli reklam kampanyaları ve kitle test süreçlerini yönetiyoruz.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-2 mb-6">
+                        <li><i class="fa-solid fa-check text-brand-accent mr-2"></i> ROAS Odaklı Kampanya Kurulumu</li>
+                        <li><i class="fa-solid fa-check text-brand-accent mr-2"></i> A/B Reklam Görseli Testleri</li>
+                        <li><i class="fa-solid fa-check text-brand-accent mr-2"></i> Yeniden Pazarlama (Retargeting)</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 5 -->
+                <div class="group relative bg-brand-card p-8 rounded-2xl border border-slate-800 hover:border-purple-400/50 hover:bg-slate-900/50 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-6 text-xl group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-people-arrows"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Influencer Pazarlaması</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Markanız için en doğru nano, mikro ve makro influencer'ları belirleyip iş birliği ve PR kutulama süreçlerini uçtan uca yönetiyoruz.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-2 mb-6">
+                        <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> Doğru Hedef Kitle Eşleştirmesi</li>
+                        <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> Sözleşme & Hak Yönetimi</li>
+                        <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> Kampanya Performans Analizi</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 6 -->
+                <div class="group relative bg-brand-card p-8 rounded-2xl border border-slate-800 hover:border-emerald-400/50 hover:bg-slate-900/50 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-6 text-xl group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Raporlama & Analiz</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Karmaşık verileri basitleştiriyoruz. Aylık olarak hangi içeriklerin tuttuğunu, nereden takipçi geldiğini ve büyüme trendlerinizi detaylı olarak raporluyoruz.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-2 mb-6">
+                        <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> Aylık PDF & Canlı Gösterge Paneli</li>
+                        <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> Sektörel Kıyaslama (Benchmarking)</li>
+                        <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> Gelecek Ayın Eylem Stratejisi</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO / CASE STUDIES -->
+    <section id="markalar" class="py-24 bg-brand-card/30 relative border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-6">
+                <div class="max-w-xl space-y-4">
+                    <span class="text-sm font-bold text-brand-neonCyan uppercase tracking-widest block">BAŞARI HİKAYELERİMİZ</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white">Yükselişe Geçirdiğimiz Bazı Markalarımız</h2>
+                    <p class="text-slate-400">Markalara sadece estetik tasarımlar yapmıyoruz, onların takipçi, satış ve etkileşim sayılarını katlıyoruz.</p>
+                </div>
+                
+                <!-- Category Filters -->
+                <div class="flex flex-wrap gap-2" id="portfolio-filters">
+                    <button data-filter="all" class="filter-btn px-4 py-2 rounded-lg text-xs font-bold tracking-wide uppercase transition-all bg-brand-accent text-white">HEPSİ</button>
+                    <button data-filter="ecomm" class="filter-btn px-4 py-2 rounded-lg text-xs font-bold tracking-wide uppercase transition-all bg-slate-900 border border-slate-800 text-slate-400 hover:text-white">E-TİCARET & KOZMETİK</button>
+                    <button data-filter="fmcg" class="filter-btn px-4 py-2 rounded-lg text-xs font-bold tracking-wide uppercase transition-all bg-slate-900 border border-slate-800 text-slate-400 hover:text-white">GIDA & CAFE</button>
+                    <button data-filter="b2b" class="filter-btn px-4 py-2 rounded-lg text-xs font-bold tracking-wide uppercase transition-all bg-slate-900 border border-slate-800 text-slate-400 hover:text-white">TEKNOLOJİ & HİZMET</button>
+                </div>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="portfolio-grid">
+                
+                <!-- Project 1 -->
+                <div class="portfolio-item bg-brand-card rounded-2xl overflow-hidden border border-slate-800 group transition-all duration-300 hover:-translate-y-2" data-category="ecomm">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-tr from-brand-neonPurple to-brand-neonPink p-1">
+                        <img src="https://placehold.co/600x450/1e1e38/ffffff?text=Luxe+Güzellik" alt="Luxe Kozmetik Sosyal Medya" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x450/1F2937/FFFFFF?text=Luxe+Beauty'">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                            <span class="px-4 py-2 bg-white text-slate-900 font-bold text-xs rounded-xl shadow-lg">Detayları Gör</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-brand-neonPurple uppercase">E-Ticaret & Kozmetik</span>
+                            <span class="px-2.5 py-1 bg-green-500/10 text-green-400 text-xs font-bold rounded-lg border border-green-500/20"><i class="fa-solid fa-arrow-trend-up mr-1"></i> %340 Erişim</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Luxe Güzellik ve Bakım</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Instagram'da marka estetiğini lüks segmentine yakışır şekilde baştan tasarladık. Ürettiğimiz Reels içerikleri ve influencer iş birlikleriyle organik kitleyi büyüttük.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Çalışma Süresi: <strong>6 Ay</strong></span>
+                            <span class="text-slate-300 font-medium">+25K Yeni Takipçi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="portfolio-item bg-brand-card rounded-2xl overflow-hidden border border-slate-800 group transition-all duration-300 hover:-translate-y-2" data-category="fmcg">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-tr from-brand-neonPink to-brand-accent p-1">
+                        <img src="https://placehold.co/600x450/2d1c38/ffffff?text=Velo+Coffee" alt="Velo Coffee Sosyal Medya" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x450/1F2937/FFFFFF?text=Velo+Coffee'">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                            <span class="px-4 py-2 bg-white text-slate-900 font-bold text-xs rounded-xl shadow-lg">Detayları Gör</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-brand-neonPink uppercase">Gıda & Cafe</span>
+                            <span class="px-2.5 py-1 bg-green-500/10 text-green-400 text-xs font-bold rounded-lg border border-green-500/20"><i class="fa-solid fa-arrow-trend-up mr-1"></i> %280 Etkileşim</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Velo Coffee Roasters</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Haftalık TikTok ve Instagram Reels içerikleri üreterek şubeye gelen müşteri trafiğini artırdık. Kahve demleme rehberi içeriklerimiz viral listelere girdi.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Çalışma Süresi: <strong>3 Ay</strong></span>
+                            <span class="text-slate-300 font-medium">+12K Mağaza Ziyareti</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="portfolio-item bg-brand-card rounded-2xl overflow-hidden border border-slate-800 group transition-all duration-300 hover:-translate-y-2" data-category="b2b">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-tr from-brand-accent to-brand-neonCyan p-1">
+                        <img src="https://placehold.co/600x450/182a38/ffffff?text=Aura+Yazılım" alt="Aura Yazılım Sosyal Medya" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x450/1F2937/FFFFFF?text=Aura+Software'">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                            <span class="px-4 py-2 bg-white text-slate-900 font-bold text-xs rounded-xl shadow-lg">Detayları Gör</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-brand-neonCyan uppercase">Teknoloji & Hizmet</span>
+                            <span class="px-2.5 py-1 bg-green-500/10 text-green-400 text-xs font-bold rounded-lg border border-green-500/20"><i class="fa-solid fa-arrow-trend-up mr-1"></i> %410 Lead Kaydı</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Aura SaaS Yazılımı</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            LinkedIn odaklı uzman içerik stratejisi ve YouTube rehber serileriyle markanın profesyonel B2B imajını güçlendirdik. Ücretsiz deneme (Free-trial) kayıtlarını yükselttik.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Çalışma Süresi: <strong>12 Ay</strong></span>
+                            <span class="text-slate-300 font-medium">B2B Sektör Liderliği</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="portfolio-item bg-brand-card rounded-2xl overflow-hidden border border-slate-800 group transition-all duration-300 hover:-translate-y-2" data-category="ecomm">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-tr from-emerald-500 to-teal-400 p-1">
+                        <img src="https://placehold.co/600x450/15291f/ffffff?text=Zeta+Giyim" alt="Zeta Giyim Sosyal Medya" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x450/1F2937/FFFFFF?text=Zeta+Fashion'">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                            <span class="px-4 py-2 bg-white text-slate-900 font-bold text-xs rounded-xl shadow-lg">Detayları Gör</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-400 uppercase">E-Ticaret & Kozmetik</span>
+                            <span class="px-2.5 py-1 bg-green-500/10 text-green-400 text-xs font-bold rounded-lg border border-green-500/20"><i class="fa-solid fa-arrow-trend-up mr-1"></i> %510 Satış</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Zeta Butik & Tasarım</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Instagram Alışveriş entegrasyonu, haftalık kombin Reels'ları ve yoğun Meta katalog reklamları kurgusuyla, e-ticaret web sitesinin cirosunu 5 katına çıkardık.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Çalışma Süresi: <strong>8 Ay</strong></span>
+                            <span class="text-slate-300 font-medium">4.2 ROAS Ortalaması</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="portfolio-item bg-brand-card rounded-2xl overflow-hidden border border-slate-800 group transition-all duration-300 hover:-translate-y-2" data-category="fmcg">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-tr from-amber-500 to-orange-400 p-1">
+                        <img src="https://placehold.co/600x450/2d2112/ffffff?text=FitBite+Atıştırmalık" alt="FitBite Atıştırmalık Sosyal Medya" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x450/1F2937/FFFFFF?text=FitBite'">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                            <span class="px-4 py-2 bg-white text-slate-900 font-bold text-xs rounded-xl shadow-lg">Detayları Gör</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-400 uppercase">Gıda & Cafe</span>
+                            <span class="px-2.5 py-1 bg-green-500/10 text-green-400 text-xs font-bold rounded-lg border border-green-500/20"><i class="fa-solid fa-arrow-trend-up mr-1"></i> %190 Marka Bilinirliği</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">FitBite Organik Atıştırmalık</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Sağlıklı beslenme blogger'ları üzerinden düzenlediğimiz geniş çaplı kitle kampanyası ile, yeni çıkan organik atıştırmalık serisini tüm Türkiye'ye duyurduk.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Çalışma Süresi: <strong>4 Ay</strong></span>
+                            <span class="text-slate-300 font-medium">+30 Satış Noktası Anlaşması</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="portfolio-item bg-brand-card rounded-2xl overflow-hidden border border-slate-800 group transition-all duration-300 hover:-translate-y-2" data-category="b2b">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-tr from-cyan-500 to-blue-500 p-1">
+                        <img src="https://placehold.co/600x450/12252d/ffffff?text=Nexa+Danışmanlık" alt="Nexa Danışmanlık Sosyal Medya" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x450/1F2937/FFFFFF?text=Nexa+Consulting'">
+                        <div class="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                            <span class="px-4 py-2 bg-white text-slate-900 font-bold text-xs rounded-xl shadow-lg">Detayları Gör</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-cyan-400 uppercase">Teknoloji & Hizmet</span>
+                            <span class="px-2.5 py-1 bg-green-500/10 text-green-400 text-xs font-bold rounded-lg border border-green-500/20"><i class="fa-solid fa-arrow-trend-up mr-1"></i> %310 Organik Takipçi</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Nexa Küresel Eğitim & Danışmanlık</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Yurt dışı eğitim ve kariyer alanındaki uzmanlıklarını Instagram infografikleri ve YouTube mini videoları ile sunarak potansiyel öğrenci kitlemizi 3 katına çıkarttık.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Çalışma Süresi: <strong>9 Ay</strong></span>
+                            <span class="text-slate-300 font-medium">Bireysel Markalaşma Gücü</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE ROI CALCULATOR SECTION -->
+    <section id="arac" class="py-24 relative overflow-hidden">
+        <!-- Background light effect -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-accent/5 rounded-full blur-[140px] -z-10"></div>
+        
+        <div class="max-w-4xl mx-auto px-6">
+            
+            <div class="glassmorphism rounded-3xl p-8 md:p-12 border border-slate-800 shadow-2xl relative">
+                <!-- Glowing corner effect -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-brand-neonCyan/20 to-transparent blur-xl pointer-events-none"></div>
+                
+                <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
+                    <span class="text-xs font-bold text-brand-neonCyan uppercase tracking-widest bg-brand-neonCyan/10 px-3 py-1 rounded-full border border-brand-neonCyan/20 inline-block">MİNİ ANALİZ VE TAHMİNLEYİCİ</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white">Sosyal Medyadaki Potansiyelinizi Hesaplayın</h2>
+                    <p class="text-sm text-slate-400">Markanızın mevcut takipçi sayısını ve haftalık paylaşım sıklığını belirleyerek, bizimle çalıştıktan sonra elde edebileceğiniz aylık tahmini organik erişim ve büyüme oranlarını hemen analiz edin!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    
+                    <!-- Form Controls / Inputs -->
+                    <div class="space-y-6">
+                        <!-- Sector Select -->
+                        <div class="space-y-2">
+                            <label for="calc-sector" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Sektörünüz</label>
+                            <select id="calc-sector" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-brand-neonCyan transition-all">
+                                <option value="ecomm">E-Ticaret & Kozmetik / Giyim</option>
+                                <option value="food">Gıda / Restoran & Cafe</option>
+                                <option value="tech">Teknoloji / SaaS / Hizmet</option>
+                                <option value="personal">Kişisel Marka / Danışmanlık</option>
+                            </select>
+                        </div>
+
+                        <!-- Follower Slider -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-slate-400">
+                                <span>Mevcut Takipçi Sayısı</span>
+                                <span id="follower-val" class="text-brand-neonCyan font-bold">10.000</span>
+                            </div>
+                            <input type="range" id="calc-followers" min="1000" max="100000" step="1000" value="10000" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-neonCyan">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>1 Bin</span>
+                                <span>100 Bin</span>
+                            </div>
+                        </div>
+
+                        <!-- Frequency Input -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-slate-400">
+                                <span>Haftalık Paylaşım Sıklığı (Gönderi/Reels)</span>
+                                <span id="freq-val" class="text-brand-neonCyan font-bold">3 Gönderi</span>
+                            </div>
+                            <input type="range" id="calc-frequency" min="1" max="14" step="1" value="3" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-neonCyan">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>Haftada 1</span>
+                                <span>Haftada 14 (Günde 2)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Results Panel -->
+                    <div class="bg-slate-950/80 rounded-2xl p-6 border border-slate-800 space-y-6">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 text-center">Graphia Tahmini Sonuçları</h4>
+                        
+                        <!-- Estimated Monthly Reach -->
+                        <div class="text-center">
+                            <span class="block text-xs text-slate-400 mb-1">Aylık Potansiyel Organik Erişim</span>
+                            <span id="res-reach" class="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-neonCyan to-brand-accent">24.500+</span>
+                            <span class="block text-[10px] text-slate-500 mt-1">Algoritma optimizasyonu ve doğru 'hook' kullanımı dahil edilmiştir.</span>
+                        </div>
+
+                        <!-- Grid metrics breakdown -->
+                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800/80">
+                            <div>
+                                <span class="block text-[10px] text-slate-500 uppercase">Aylık Takipçi Artışı</span>
+                                <span id="res-growth" class="text-lg font-bold text-green-400">+450 / ay</span>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] text-slate-500 uppercase">Ortalama Etkileşim Oranı</span>
+                                <span id="res-engagement" class="text-lg font-bold text-brand-neonPink">%5.4</span>
+                            </div>
+                        </div>
+
+                        <!-- Strategic Advice Badge -->
+                        <div class="bg-brand-card/60 p-3 rounded-xl border border-slate-800/80 text-center">
+                            <span class="block text-[9px] font-bold text-brand-neonPurple uppercase tracking-widest mb-1">Önerilen Kampanya Stratejisi</span>
+                            <p id="res-strategy" class="text-xs text-slate-300 font-medium">Reels Ağırlıklı Organik Büyüme & Mikro Influencer Kampanyası</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-800/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p class="text-xs text-slate-500 text-center sm:text-left"><i class="fa-solid fa-circle-info mr-1.5"></i>Bu veriler, ajansımızın geçmiş kampanya başarı ortalamalarına dayanan simülasyonlardır.</p>
+                    <a href="#iletisim" class="text-xs font-bold text-brand-neonCyan hover:underline">Markanıza Özel Analiz Raporu Alın <i class="fa-solid fa-chevron-right ml-1"></i></a>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section id="yorumlar" class="py-24 bg-brand-card/20 relative border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                <span class="text-sm font-bold text-brand-neonPurple uppercase tracking-widest block">PARTNERLERİMİZ NE DİYOR?</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white">Yorumlarıyla Bizi Gururlandıranlar</h2>
+                <p class="text-slate-400">Fikirlerimize ve stratejimize güvenen, bizimle birlikte büyüyen harika marka yöneticileri.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Testimonial 1 -->
+                <div class="bg-brand-card p-8 rounded-2xl border border-slate-800/80 relative flex flex-col justify-between h-full">
+                    <span class="absolute top-6 right-8 text-5xl text-slate-800 pointer-events-none font-serif">“</span>
+                    <div class="space-y-4 relative z-10">
+                        <!-- Rating stars -->
+                        <div class="flex text-amber-400 text-xs">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed italic">
+                            "Graphia ile çalışmaya başladıktan sadece 3 ay sonra, organik Instagram erişimimiz tavan yaptı. Özellikle Reels videolarındaki kurgu kalitesi ve fikirler tam hedef kitlemize hitap ediyor."
+                        </p>
+                    </div>
+                    <div class="mt-6 flex items-center space-x-3 pt-4 border-t border-slate-800/60">
+                        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-xs">SŞ</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">Selin Şener</h4>
+                            <p class="text-[10px] text-slate-500">Luxe Kozmetik Kurucusu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-brand-card p-8 rounded-2xl border border-slate-800/80 relative flex flex-col justify-between h-full">
+                    <span class="absolute top-6 right-8 text-5xl text-slate-800 pointer-events-none font-serif">“</span>
+                    <div class="space-y-4 relative z-10">
+                        <div class="flex text-amber-400 text-xs">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed italic">
+                            "Reklam hesaplarımızı optimize ederek bütçemizi çok daha verimli kullanmaya başladık. ROAS oranımız hiç olmadığı kadar yüksek. Ekibin hızlı geri dönüşleri ve profesyonelliği harika."
+                        </p>
+                    </div>
+                    <div class="mt-6 flex items-center space-x-3 pt-4 border-t border-slate-800/60">
+                        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-xs">AÖ</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">Ahmet Öztürk</h4>
+                            <p class="text-[10px] text-slate-500">Zeta Giyim E-Ticaret Müdürü</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-brand-card p-8 rounded-2xl border border-slate-800/80 relative flex flex-col justify-between h-full">
+                    <span class="absolute top-6 right-8 text-5xl text-slate-800 pointer-events-none font-serif">“</span>
+                    <div class="space-y-4 relative z-10">
+                        <div class="flex text-amber-400 text-xs">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed italic">
+                            "Sıradan dijital ajanslar gibi değiller. Bize gerçekten her ay yepyeni ve özgün fikirlerle geliyorlar. Sadece bir tedarikçi değil, içimizden biri gibi çalışan gerçek bir iş ortağı."
+                        </p>
+                    </div>
+                    <div class="mt-6 flex items-center space-x-3 pt-4 border-t border-slate-800/60">
+                        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-xs">ME</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">Murat Erdem</h4>
+                            <p class="text-[10px] text-slate-500">Velo Coffee Pazarlama Direktörü</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="sss" class="py-24 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-6">
+            
+            <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                <span class="text-sm font-bold text-brand-neonCyan uppercase tracking-widest block">AKLINIZA TAKILANLAR</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white">Sıkça Sorulan Sorular</h2>
+                <p class="text-slate-400">Çalışma süreçlerimiz, bütçelendirme ve kampanya yönetimleri hakkında bilmek istedikleriniz.</p>
+            </div>
+
+            <!-- Accordion FAQ -->
+            <div class="space-y-4">
+                
+                <!-- FAQ 1 -->
+                <div class="bg-brand-card border border-slate-800 rounded-2xl overflow-hidden transition-colors duration-300">
+                    <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+                        <span class="text-base font-bold text-white">Sosyal medya yönetim süreçleriniz nasıl ilerliyor?</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4">
+                        Sürecimiz detaylı bir rakip ve hedef kitle analiziyle başlar. Markanızın sesini belirledikten sonra 30 günlük bir içerik planı hazırlarız. Onayınızdan geçen plan doğrultusunda video, görsel ve metinler üretilir. Her ay sonunda elde edilen verileri, erişimleri ve bütçe dönüşümlerini şeffaf bir şekilde raporlarız.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-brand-card border border-slate-800 rounded-2xl overflow-hidden transition-colors duration-300">
+                    <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+                        <span class="text-base font-bold text-white">Video (Reels/TikTok) çekimlerini ve kurgularını kim yapıyor?</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4">
+                        Kendi kreatif ekibimiz ve ekipmanlarımızla çekimleri gerçekleştiriyoruz. Senaryoyu önceden yazar, onayınıza sunar, ardından çekim gününü planlarız. Mobil trendlere uygun kurgu ve altyazı işlemlerinin ardından videolarınızı yayına hazır hale getiririz. İstanbul içi yerinde çekim imkanlarımız bulunurken, diğer şehirler için kargo/stüdyo kurguları hazırlayabiliyoruz.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-brand-card border border-slate-800 rounded-2xl overflow-hidden transition-colors duration-300">
+                    <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+                        <span class="text-base font-bold text-white">Hizmet fiyatlarınız ve paketleriniz nasıl belirleniyor?</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4">
+                        Standart kalıplardan uzak duruyoruz çünkü her markanın ihtiyacı farklıdır. İhtiyacınız olan paylaşım sıklığına, çekim günlerine, reklam bütçe yönetimine ve ek hizmetlere (örn: Influencer pazarlaması) göre markanıza özel, optimize edilmiş aylık bir abonelik bütçesi teklif ediyoruz.
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-brand-card border border-slate-800 rounded-2xl overflow-hidden transition-colors duration-300">
+                    <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+                        <span class="text-base font-bold text-white">Minimum ne kadar süreyle sözleşme yapıyorsunuz?</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4">
+                        Algoritmanın ve marka kimliğinin sosyal medyada oturması zaman alır. Sağlıklı sonuçlar ve net bir büyüme görebilmemiz için markalarımızla genellikle minimum 3 veya 6 aylık sözleşmeler dahilinde çalışmayı tercih ediyoruz.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="iletisim" class="py-24 bg-slate-950 relative border-t border-slate-900">
+        <!-- Decoration light -->
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-brand-neonPink/10 rounded-full blur-[100px] -z-10"></div>
+        
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                
+                <!-- Contact Info Left -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div class="space-y-4 text-center lg:text-left">
+                        <span class="text-sm font-bold text-brand-neonPink uppercase tracking-widest block">HAZIR MISINIZ?</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white">Markanızı Birlikte Zirveye Taşıyalım</h2>
+                        <p class="text-slate-400">Hayallerinizdeki sosyal medya imajına kavuşmak ve hedef kitlenizi organik olarak büyütmek için ilk adımı atın. Formu doldurun, sizinle iletişime geçelim.</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Contact Item 1 -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-neonPurple text-sm shrink-0">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <span class="block text-xs text-slate-500 uppercase font-semibold">Bize Yazın</span>
+                                <a href="mailto:hello@graphia.media" class="text-sm text-slate-200 hover:text-white transition-colors">hello@graphia.media</a>
+                            </div>
+                        </div>
+
+                        <!-- Contact Item 2 -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-neonPink text-sm shrink-0">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <span class="block text-xs text-slate-500 uppercase font-semibold">Bizi Arayın</span>
+                                <a href="tel:+902120000000" class="text-sm text-slate-200 hover:text-white transition-colors">+90 (212) 000 00 00</a>
+                            </div>
+                        </div>
+
+                        <!-- Contact Item 3 -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-neonCyan text-sm shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <span class="block text-xs text-slate-500 uppercase font-semibold">Ofisimiz</span>
+                                <span class="text-sm text-slate-200">Maslak, Kolektif House No:4, İstanbul</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-800 flex justify-center lg:justify-start space-x-4 text-slate-400 text-lg">
+                        <a href="#" class="hover:text-white transition-colors" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-white transition-colors" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-white transition-colors" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="#" class="hover:text-white transition-colors" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Contact Form Right -->
+                <div class="lg:col-span-7">
+                    <div class="bg-brand-card rounded-3xl p-8 border border-slate-800/80 shadow-2xl relative overflow-hidden">
+                        
+                        <form id="agency-contact-form" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="contact-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Adınız Soyadınız</label>
+                                    <input type="text" id="contact-name" required placeholder="Örn: Ahmet Yılmaz" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3.5 text-sm text-slate-200 focus:outline-none focus:border-brand-neonPurple transition-all">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="contact-brand" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Markanızın Adı</label>
+                                    <input type="text" id="contact-brand" required placeholder="Örn: Luxe Güzellik" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3.5 text-sm text-slate-200 focus:outline-none focus:border-brand-neonPurple transition-all">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="contact-email" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">E-Posta Adresiniz</label>
+                                    <input type="email" id="contact-email" required placeholder="ahmet@markaniz.com" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3.5 text-sm text-slate-200 focus:outline-none focus:border-brand-neonPurple transition-all">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="contact-phone" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Telefon Numaranız</label>
+                                    <input type="tel" id="contact-phone" required placeholder="0555 555 55 55" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3.5 text-sm text-slate-200 focus:outline-none focus:border-brand-neonPurple transition-all">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Ana Hedefiniz Nedir? (Birden fazla seçebilirsiniz)</label>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <label class="block cursor-pointer select-none">
+                                        <input type="checkbox" name="goals" value="Takipçi Artışı" class="sr-only peer">
+                                        <div class="text-xs font-semibold text-center py-2.5 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-400 peer-checked:bg-brand-neonPurple/20 peer-checked:border-brand-neonPurple peer-checked:text-white transition-all">Takipçi Artışı</div>
+                                    </label>
+                                    <label class="block cursor-pointer select-none">
+                                        <input type="checkbox" name="goals" value="Daha Fazla Satış" class="sr-only peer">
+                                        <div class="text-xs font-semibold text-center py-2.5 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-400 peer-checked:bg-brand-neonPurple/20 peer-checked:border-brand-neonPurple peer-checked:text-white transition-all">Daha Fazla Satış</div>
+                                    </label>
+                                    <label class="block cursor-pointer select-none">
+                                        <input type="checkbox" name="goals" value="Estetik Tasarım" class="sr-only peer">
+                                        <div class="text-xs font-semibold text-center py-2.5 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-400 peer-checked:bg-brand-neonPurple/20 peer-checked:border-brand-neonPurple peer-checked:text-white transition-all">Estetik Tasarım</div>
+                                    </label>
+                                    <label class="block cursor-pointer select-none">
+                                        <input type="checkbox" name="goals" value="Video Prodüksiyon" class="sr-only peer">
+                                        <div class="text-xs font-semibold text-center py-2.5 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-400 peer-checked:bg-brand-neonPurple/20 peer-checked:border-brand-neonPurple peer-checked:text-white transition-all">Reels / Prodüksiyon</div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="contact-msg" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Bize Eklemek İstediğiniz Not</label>
+                                <textarea id="contact-msg" rows="4" placeholder="Markanız, hedefleriniz veya bütçeniz hakkında eklemek istedikleriniz..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3.5 text-sm text-slate-200 focus:outline-none focus:border-brand-neonPurple transition-all"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 rounded-xl text-base font-bold text-white bg-gradient-to-r from-brand-accent to-brand-neonPurple hover:opacity-90 transition-all shadow-lg hover:shadow-indigo-500/20">
+                                Mesajı Gönder <i class="fa-solid fa-paper-plane ml-2 text-xs"></i>
+                            </button>
+                        </form>
+
+                        <!-- Success Alert Message (Hidden by default) -->
+                        <div id="success-message" class="hidden absolute inset-0 bg-brand-card flex flex-col items-center justify-center p-8 text-center space-y-4">
+                            <div class="w-16 h-16 rounded-full bg-green-500/10 text-green-400 flex items-center justify-center text-3xl mb-2">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white">Harika, Talebinizi Aldık!</h3>
+                            <p class="text-sm text-slate-400 max-w-sm">Marka stratejistlerimiz talebinizi inceleyecek ve 24 saat içerisinde markanıza özel büyüme fikirleriyle sizinle iletişime geçecektir.</p>
+                            <button onclick="resetContactForm()" class="px-5 py-2.5 bg-slate-900 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl hover:bg-slate-800 transition-all mt-4">Yeni Talep Gönder</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-900 bg-brand-dark py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+                
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-neonPurple to-brand-neonPink p-[1px] flex items-center justify-center">
+                        <div class="w-full h-full bg-brand-dark rounded-[7px] flex items-center justify-center">
+                            <span class="text-xs font-extrabold text-white">G</span>
+                        </div>
+                    </div>
+                    <span class="text-base font-bold text-white">GRAPHIA<span class="text-brand-neonPink">.</span></span>
+                </div>
+
+                <p class="text-xs text-slate-500">
+                    &copy; 2026 Graphia Media. Tüm hakları saklıdır. <br class="md:hidden"> Dijital dünyada izinizi bırakın.
+                </p>
+
+                <div class="flex space-x-6 text-xs text-slate-500">
+                    <a href="#" class="hover:text-white transition-colors">Gizlilik Politikası</a>
+                    <a href="#" class="hover:text-white transition-colors">Kullanım Şartları</a>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+    <script>
+        // Header Scroll Animation
+        const header = document.getElementById('mainHeader');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                header.classList.add('py-3', 'shadow-xl', 'bg-brand-dark/95');
+                header.classList.remove('py-4', 'bg-brand-dark/75');
+            } else {
+                header.classList.add('py-4', 'bg-brand-dark/75');
+                header.classList.remove('py-3', 'shadow-xl', 'bg-brand-dark/95');
             }
         });
-        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.className = 'fa-solid fa-bars text-2xl';
+            } else {
+                icon.className = 'fa-solid fa-xmark text-2xl';
+            }
+        });
+
+        // Close mobile menu on click any item
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuBtn.querySelector('i').className = 'fa-solid fa-bars text-2xl';
+            });
+        });
+
+        // Portfolio Category Filter System
+        const filterButtons = document.querySelectorAll('#portfolio-filters button');
+        const portfolioItems = document.querySelectorAll('#portfolio-grid .portfolio-item');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Active button styling
+                filterButtons.forEach(b => {
+                    b.className = 'filter-btn px-4 py-2 rounded-lg text-xs font-bold tracking-wide uppercase transition-all bg-slate-900 border border-slate-800 text-slate-400 hover:text-white';
+                });
+                btn.className = 'filter-btn px-4 py-2 rounded-lg text-xs font-bold tracking-wide uppercase transition-all bg-brand-accent text-white';
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                portfolioItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.classList.remove('hidden');
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'scale(1)';
+                        }, 50);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            item.classList.add('hidden');
+                        }, 250);
+                    }
+                });
+            });
+        });
+
+        // Interactive Growth Calculator Logic
+        const calcSector = document.getElementById('calc-sector');
+        const calcFollowers = document.getElementById('calc-followers');
+        const calcFrequency = document.getElementById('calc-frequency');
+
+        const followerVal = document.getElementById('follower-val');
+        const freqVal = document.getElementById('freq-val');
+
+        const resReach = document.getElementById('res-reach');
+        const resGrowth = document.getElementById('res-growth');
+        const resEngagement = document.getElementById('res-engagement');
+        const resStrategy = document.getElementById('res-strategy');
+
+        function formatNumber(num) {
+            return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+        }
+
+        function calculateResults() {
+            const followers = parseInt(calcFollowers.value);
+            const frequency = parseInt(calcFrequency.value);
+            const sector = calcSector.value;
+
+            // Display dynamic values
+            followerVal.textContent = formatNumber(followers);
+            freqVal.textContent = frequency + ' Gönderi / Hafta';
+
+            // Constants based on sector
+            let multiplier = 1.8;
+            let engagementBase = 4.2;
+            let growthBase = 0.05; // 5%
+
+            if (sector === 'ecomm') {
+                multiplier = 2.4; // Reels & visual products get higher organic push
+                engagementBase = 5.8;
+                growthBase = 0.07;
+            } else if (sector === 'food') {
+                multiplier = 2.1;
+                engagementBase = 6.2;
+                growthBase = 0.06;
+            } else if (sector === 'tech') {
+                multiplier = 1.4; // Tech SaaS has lower organic reach but higher high-intent leads
+                engagementBase = 3.5;
+                growthBase = 0.04;
+            } else if (sector === 'personal') {
+                multiplier = 2.0;
+                engagementBase = 6.8; // Personal brands get amazing engagement
+                growthBase = 0.08;
+            }
+
+            // Calculation Logic
+            // Reach estimation = followers * frequency * multi * custom algorithm
+            const estReach = Math.round(followers * (frequency * 0.45) * multiplier);
+            const estFollowersArtisi = Math.round(followers * growthBase * (frequency * 0.3));
+            const estEngagement = (engagementBase * (1 + (frequency * 0.03))).toFixed(1);
+
+            // Set content with animations
+            resReach.textContent = formatNumber(estReach) + '+';
+            resGrowth.textContent = '+' + formatNumber(estFollowersArtisi) + ' / ay';
+            resEngagement.textContent = '%' + estEngagement;
+
+            // Strategy recommendation text based on choices
+            let strategyText = '';
+            if (sector === 'ecomm') {
+                strategyText = frequency < 4 
+                    ? 'Instagram Reels & Hikayede Satış Odaklı Katalog Reklamı Kurulumu'
+                    : 'Yüksek Sıklıkta Reels Üretimi ve Meta Alışveriş Hunisi Optimizasyonu';
+            } else if (sector === 'food') {
+                strategyText = 'Ağız Sulandıran Reels Çekimleri & Konum Odaklı Instagram Keşfet Reklamı';
+            } else if (sector === 'tech') {
+                strategyText = 'LinkedIn Otorite İçerikleri & YouTube Eğitici İçerik Kurgusu';
+            } else {
+                strategyText = 'Kişisel Hikaye Anlatımı (Storytelling) & Soru-Cevap Etkileşim Serisi';
+            }
+            resStrategy.textContent = strategyText;
+        }
+
+        // Event listeners for calculator inputs
+        calcSector.addEventListener('change', calculateResults);
+        calcFollowers.addEventListener('input', calculateResults);
+        calcFrequency.addEventListener('input', calculateResults);
+
+        // Run once on load
+        calculateResults();
+
+        // FAQ Accordion System
+        const faqToggles = document.querySelectorAll('.faq-toggle');
+        faqToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const content = toggle.nextElementSibling;
+                const icon = toggle.querySelector('i');
+                
+                // Toggle current accordion
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+
+                // Adjust card borders on toggle
+                const parent = toggle.parentElement;
+                if (!content.classList.contains('hidden')) {
+                    parent.classList.add('border-brand-accent/30');
+                } else {
+                    parent.classList.remove('border-brand-accent/30');
+                }
+            });
+        });
+
+        // Contact Form Submission
+        const contactForm = document.getElementById('agency-contact-form');
+        const successMessage = document.getElementById('success-message');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Process form data smoothly (Mock implementation)
+            const name = document.getElementById('contact-name').value;
+            const brand = document.getElementById('contact-brand').value;
+            const email = document.getElementById('contact-email').value;
+            const phone = document.getElementById('contact-phone').value;
+            
+            // Gather selected checkboxes
+            const selectedGoals = [];
+            const checkboxes = document.querySelectorAll('input[name="goals"]:checked');
+            checkboxes.forEach(cb => selectedGoals.push(cb.value));
+
+            // Log submission mockup internally
+            console.log("Form submitted:", { name, brand, email, phone, selectedGoals });
+
+            // Display custom inside-card thank you message safely
+            successMessage.classList.remove('hidden');
+        });
+
+        function resetContactForm() {
+            contactForm.reset();
+            // Deselect checkboxes style reset
+            const checkboxes = document.querySelectorAll('input[name="goals"]:checked');
+            checkboxes.forEach(cb => { cb.checked = false; });
+            successMessage.classList.add('hidden');
+        }
     </script>
 </body>
 </html>
